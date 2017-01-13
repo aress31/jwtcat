@@ -32,9 +32,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description = "JSON Web Token brute-forcer")
 
     parser.add_argument("-t", "--token", dest = "token", help = "JSON Web Token", required = True, type = str)
-    parser.add_argument("-v", "--verbose", dest = "verbose", help = "enable verbose mode", required = False, action = "store_true")
+    parser.add_argument("-v", "--verbose", dest = "verbose", help = "enable verbose -- display every attempt", required = False, action = "store_true")
     # Set the UTF-8 encoding and ignore error mode to avoid issues with the wordlist
-    parser.add_argument("-w", "--wordlist", dest = "wordlist", help = "wordlist containing the secrets to try", required = True, type = argparse.FileType('r', encoding = 'UTF-8', errors = 'ignore'))
+    parser.add_argument("-w", "--wordlist", dest = "wordlist", help = "wordlist containing the passwords -- one per line", required = True, type = argparse.FileType('r', encoding = 'UTF-8', errors = 'ignore'))
  
     return parser.parse_args()
 
