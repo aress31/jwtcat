@@ -1,4 +1,4 @@
-![JSON Web Token Brute-forcer](images/jwtcat_logo.jpg)
+![JSON Web Token Brute-forcer](images/jwtcat_logo.png)
 # jwtcat
 ##Bruteforcing JSON Web Token.
 
