@@ -4,6 +4,8 @@
 
 This script performs brute-force attacks against JSON Web Tokens (JWT) in order to uncover the key used to create the JWT signature. 
 
+*N.B. This script is configured to crack signatures generated using the HS256 hashing algorithm.*
+
 More information about JWT vulnerabilities can be found at:
 
 <https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/>
