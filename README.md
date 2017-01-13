@@ -2,9 +2,9 @@
 # jwtcat
 ##Bruteforcing JSON Web Token.
 
-This script performs brute-force attacks against JSON Web Tokens (JWT) in order to uncover the key used to create the JWT signature. 
+This script performs brute-force attacks against the JSON Web Token (JWT) to discover the secret key used to sign the JWT. 
 
-*N.B. This script is configured to crack signatures generated using the HS256 hashing algorithm.*
+*N.B. This script is only configured to work with signatures generated using the 'HS256' hashing algorithm.*
 
 More information about JWT vulnerabilities can be found at:
 
@@ -19,8 +19,8 @@ More information about JWT vulnerabilities can be found at:
         $ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
 
     [-t, --token]:      JSON Web Token 
-    [-v, --verbose]:    enable verbose -- display every attempts 
-    [-w, --wordlist]:   wordlist containing the passwords to try -- one per line
+    [-v, --verbose]:    enable verbose -- display every attempt
+    [-w, --wordlist]:   wordlist containing the passwords -- one per line
     [-h, --help]:       print help
 
 ## Dependencies
@@ -37,4 +37,4 @@ The *python3-jwt* package is required.
 
 ## Future Improvements
 * Improve the code quality.
-* Improve the general runtime speed.
+* Improve the runtime speed.
