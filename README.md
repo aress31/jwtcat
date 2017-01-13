@@ -10,6 +10,8 @@ More information about JWT vulnerabilities can be found at:
 
 <https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/>
 
+![example](images/example.png)
+
 ## Installation
 	$ git clone https://github.com/AresS31/jwtcat
 	$ cd jwtcat
