@@ -81,7 +81,7 @@ def main():
                     print(RESULT + "Secret key: " + Style.BRIGHT + word + RESET) 
 
                     # Save the holy secret into a file in case sys.stdout is not responding
-                    with open("jwtpot.pot", "a+") as file:
+                    with open("jwtpot.potfile", "a+") as file:
                         file.write("{0}:{1}".format(token, word))
                         print(RESULT + "Secret key saved to location: " + Style.BRIGHT + "{}".format(file.name) + RESET)
 
