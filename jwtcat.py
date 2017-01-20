@@ -28,6 +28,7 @@ INFO = Fore.GREEN + "[INFO] "
 PAYLOAD = Fore.CYAN + "[PAYLOAD] "
 RESET = Style.RESET_ALL
 RESULT = Style.BRIGHT + Fore.CYAN + "[RESULT] "
+SUMMARY = Fore.YELLOW + "[SUMMARY] "
 WARNING = Fore.YELLOW + "[WARNING] "
 
 def parse_args():
@@ -61,54 +62,52 @@ def run(token, word, verbose):
         return False
 
 def main():
-        try:
-            args = parse_args()
+    try:
+        args = parse_args()
 
-            token = args.token
-            wordlist = args.wordlist
-            verbose = args.verbose
+        token = args.token
+        wordlist = args.wordlist
+        verbose = args.verbose
 
-            ## Variables summary
-            print(INFO + "JWT: " + Style.BRIGHT + "{}".format(token) + RESET)
-            print(INFO + "Wordlist: " + Style.BRIGHT + "{}".format(wordlist.name) + RESET)
+        ## Variables summary
+        print(SUMMARY + "JWT: " + Style.BRIGHT + "{}".format(token) + RESET)
+        print(SUMMARY + "Wordlist: " + Style.BRIGHT + "{}".format(wordlist.name) + RESET)
 
-            start_time = time.time()
-            print("[*] starting {}".format(time.ctime()))
-            
-            print(INFO + "Starting brute-force attacks" + RESET)
-            print(WARNING + "Pour yourself some coffee, this might take a while..." + RESET)
-            for entry in wordlist:
-                word = entry.rstrip()
-                result = run(token, word, verbose)
+        start_time = time.time()
+        print("[*] starting {}".format(time.ctime()))
+        
+        print(INFO + "Starting brute-force attacks" + RESET)
+        print(WARNING + "Pour yourself some coffee, this might take a while..." + RESET)
+        for entry in wordlist:
+            word = entry.rstrip()
+            result = run(token, word, verbose)
 
-                if result:
-                    print(RESULT + "Secret key: " + Style.BRIGHT + word + RESET) 
+            if result:
+                print(RESULT + "Secret key: " + Style.BRIGHT + word + RESET) 
 
-                    # Save the holy secret into a file in case sys.stdout is not responding
-                    with open("jwtpot.potfile", "a+") as file:
-                        file.write("{0}:{1}".format(token, word))
-                        print(RESULT + "Secret key saved to location: " + Style.BRIGHT + "{}".format(file.name) + RESET)
+                # Save the holy secret into a file in case sys.stdout is not responding
+                with open("jwtpot.potfile", "a+") as file:
+                    file.write("{0}:{1}".format(token, word))
+                    print(RESULT + "Secret key saved to location: " + Style.BRIGHT + "{}".format(file.name) + RESET)
 
-                    break
+                break
 
-            end_time = time.time()
-            print("[*] finished {}".format(time.ctime()))
+        end_time = time.time()
+        print("[*] finished {}".format(time.ctime()))
 
-            elapsed_time = end_time - start_time
-            print("[*] elapsed time: {} sec".format(elapsed_time))
+        elapsed_time = end_time - start_time
+        print("[*] elapsed time: {} sec".format(elapsed_time))
 
-        except KeyboardInterrupt:
-            print(WARNING + "Signal caught, exiting gracefully..." + RESET)
+    except KeyboardInterrupt:
+        print(WARNING + "CTRL+C pressed, exiting..." + RESET)
 
-            wordlist.close()
+        wordlist.close()
 
-            end_time = time.time()
-            print("[*] finished {}".format(time.ctime()))
+        end_time = time.time()
+        print("[*] finished {}".format(time.ctime()))
 
-            elapsed_time = end_time - start_time
-            print("[*] elapsed time: {} sec".format(elapsed_time))
-
-            sys.exit(0)
+        elapsed_time = end_time - start_time
+        print("[*] elapsed time: {} sec".format(elapsed_time))
 
 if __name__ == "__main__":
     main()
