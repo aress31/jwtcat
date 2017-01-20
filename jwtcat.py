@@ -83,7 +83,7 @@ def main():
             result = run(token, word, verbose)
 
             if result:
-                print(RESULT + "Secret key: " + Style.BRIGHT + word + RESET) 
+                print(RESULT + "Secret key: " + Style.BRIGHT + "{}".format(word) + RESET) 
 
                 # Save the holy secret into a file in case sys.stdout is not responding
                 with open("jwtpot.potfile", "a+") as file:
