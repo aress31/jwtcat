@@ -104,7 +104,7 @@ def main():
         wordlist.close()
 
         end_time = time.time()
-        print("[*] finished {}".format(time.ctime()))
+        print("[*] stopped {}".format(time.ctime()))
 
         elapsed_time = end_time - start_time
         print("[*] elapsed time: {} sec".format(elapsed_time))
