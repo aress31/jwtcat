@@ -1,6 +1,6 @@
 ![JSON Web Token Brute-forcer](images/jwtcat_logo.png)
 # jwtcat
-## Bruteforcing JSON Web Token.
+## Bruteforcing JSON Web Token
 
 This script performs brute-force attacks against the JSON Web Token (JWT) to discover the secret key used to sign the JWT. 
 
