@@ -15,7 +15,7 @@ More information about JWT vulnerabilities can be found at:
 ## Installation
 	$ git clone https://github.com/AresS31/jwtcat
 	$ cd jwtcat
-    $ pip install -r requirements.txt
+    # pip install -r requirements.txt
 
 ### Usage
         $ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
