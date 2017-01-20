@@ -23,7 +23,7 @@ More information about JWT vulnerabilities can be found at:
     [-t, --token]:      JSON Web Token 
     [-v, --verbose]:    enable verbose -- display every attempt
     [-w, --wordlist]:   wordlist containing the passwords -- one per line
-    [-h, --help]:       print help
+    [-h, --help]:       display help
 
 ## Dependencies
 ### Third-party libraries
