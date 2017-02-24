@@ -59,7 +59,7 @@ def parse_args():
         dest = "loglevel",
         help = "enable verbose",
         required = False,
-        action="store_const", 
+        action = "store_const", 
         const = logging.DEBUG,
         default = logging.INFO
     )
