@@ -42,7 +42,9 @@ logger.addHandler(handler)
 def parse_args():
     """ Parse and validate user's command line
     """
-    parser = argparse.ArgumentParser(description = "JSON Web Token brute-forcer")
+    parser = argparse.ArgumentParser(
+        description = "JSON Web Token brute-forcer"
+    )
 
     parser.add_argument(
         "-t", "--token", 
