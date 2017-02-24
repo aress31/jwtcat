@@ -24,8 +24,8 @@ import sys
 import time
 
 formatter = colorlog.ColoredFormatter(
-	"%(log_color)s[%(levelname)s] %(message)s%(reset)s",
-	reset = True,
+    "%(log_color)s[%(levelname)s] %(message)s%(reset)s",
+    reset = True,
     log_colors = {
         'DEBUG':    'cyan',
         'INFO':     'green',
@@ -99,16 +99,13 @@ def run(token, word):
 def main():
     try:
         args = parse_args()
-
         logger.setLevel(args.loglevel)
 
         token = args.token
         wordlist = args.wordlist
 
-        ## Variables summary
         logger.info("JWT: {}".format(token))
         logger.info("Wordlist: {}".format(wordlist.name))
-
         logger.info("Starting brute-force attacks")
         logger.warn("Pour yourself some coffee, this might take a while..." )
 
@@ -130,7 +127,6 @@ def main():
 
         end_time = time.time()
         elapsed_time = end_time - start_time
-
         logger.info("Finished in {} sec".format(elapsed_time))
 
     except KeyboardInterrupt:
@@ -139,7 +135,6 @@ def main():
         wordlist.close()
 
         elapsed_time = time.time() - start_time
-
         logger.info("Interrupted after {} sec".format(elapsed_time))
 
 if __name__ == "__main__":
