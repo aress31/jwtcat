@@ -1,2 +1,2 @@
-colorama
-jwt
+coloredlogs
+PyJWT

@@ -1,10 +1,10 @@
-![JSON Web Token Brute-forcer](images/jwtcat_logo.png)
+![JSON Web Token Cracker](images/jwtcat_logo.png)
 # jwtcat
-## Bruteforcing JSON Web Token.
+## Cracking JSON Web Token.
 
-This script performs brute-force attacks against the JSON Web Token (JWT) to discover the secret key used to sign the JWT. 
+This script performs offline brute-force attacks against JSON Web Token (JWT) in order to discover the secret key used for the signature. 
 
-*N.B. This script is only configured to work with signatures generated using the 'HS256' hashing algorithm.*
+*Note: This script is only configured to work with signatures generated using the 'HS256' hashing algorithm.*
 
 More information about JWT vulnerabilities can be found at:
 
@@ -13,36 +13,36 @@ More information about JWT vulnerabilities can be found at:
 ![example](images/example.png)
 
 ## Installation
-	$ git clone https://github.com/AresS31/jwtcat
-	$ cd jwtcat
-    # pip install -r requirements.txt
+    $ git clone https://github.com/AresS31/jwtcat
+    $ cd jwtcat
+    # pip3 install -r requirements.txt
 
 ### Usage
-        $ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
+    $ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
 
     [-t, --token]:      JSON Web Token 
-    [-v, --verbose]:    enable verbose -- display every attempt
-    [-w, --wordlist]:   wordlist containing the passwords -- one per line
+    [-v, --verbose]:    enable verbose
+    [-w, --wordlist]:   wordlist containing the passwords
     [-h, --help]:       display help
 
 ## Dependencies
 ### Third-party libraries
-#### colorama 0.3.7:
-The *python3-colorama* package is required. 
-
-<https://pypi.python.org/pypi/colorama>
-
-#### jwt 0.3.2: 
+#### PyJWT 1.4.2
 The *python3-jwt* package is required. 
 
-<https://pypi.python.org/pypi/jwt/0.3.2>  
+<https://pypi.python.org/pypi/PyJWT/1.4.2> 
 
-## Future Improvements
-* Improve the code quality.
-* Improve the runtime speed.
+#### python-colorlog
+The *python-colorlog* package is required. 
 
-## License
-   Copyright (C) 2017 Alexandre Teyar
+<https://pypi.python.org/pypi/colorlog>
+
+## Possible Improvements
+* Increase the script performances.
+
+## Licenses
+### jwtcat
+Copyright (C) 2017 Alexandre Teyar
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,3 +55,45 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
    limitations under the License. 
+
+### PyJWT 1.4.2
+Copyright (c) 2015 José Padilla
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+### python-colorlog
+Copyright (c) 2012 Sam Clements sam@borntyping.co.uk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

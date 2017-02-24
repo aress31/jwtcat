@@ -15,35 +15,69 @@
 
 import argparse
 from datetime import datetime, timedelta
-from colorama import Fore, Back, Style
+import colorlog
 import jwt
+import logging
 import os
 import signal
 import sys
 import time
 
-DEBUG = Fore.BLUE + "[DEBUG] "
-ERROR = Fore.RED + "[ERROR] "
-INFO = Fore.GREEN + "[INFO] "
-PAYLOAD = Fore.CYAN + "[PAYLOAD] "
-RESET = Style.RESET_ALL
-RESULT = Style.BRIGHT + Fore.CYAN + "[RESULT] "
-SUMMARY = Fore.YELLOW + "[SUMMARY] "
-WARNING = Fore.YELLOW + "[WARNING] "
+formatter = colorlog.ColoredFormatter(
+	"%(log_color)s[%(levelname)s] %(message)s%(reset)s",
+	reset = True,
+    log_colors = {
+        'DEBUG':    'cyan',
+        'INFO':     'green',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'red, bg_white',
+    }
+)
+handler = colorlog.StreamHandler()
+handler.setFormatter(formatter)
+logger = colorlog.getLogger("jwtcatLog")
+logger.addHandler(handler)
 
 def parse_args():
     """ Parse and validate user's command line
     """
     parser = argparse.ArgumentParser(description = "JSON Web Token brute-forcer")
 
-    parser.add_argument("-t", "--token", dest = "token", help = "JSON Web Token", required = True, type = str)
-    parser.add_argument("-v", "--verbose", dest = "verbose", help = "enable verbose -- display every attempt", required = False, action = "store_true")
+    parser.add_argument(
+        "-t", "--token", 
+        dest = "token", 
+        help = "JSON Web Token", 
+        required = True, 
+        type = str
+    )
+
+    parser.add_argument(
+        "-v", "--verbose",
+        dest = "loglevel",
+        help = "enable verbose",
+        required = False,
+        action="store_const", 
+        const = logging.DEBUG,
+        default = logging.INFO
+    )
+
     # Set the UTF-8 encoding and ignore error mode to avoid issues with the wordlist
-    parser.add_argument("-w", "--wordlist", dest = "wordlist", help = "wordlist containing the passwords -- one per line", required = True, type = argparse.FileType('r', encoding = 'UTF-8', errors = 'ignore'))
+    parser.add_argument(
+        "-w", "--wordlist", 
+        dest = "wordlist", 
+        help = "wordlist containing the passwords", 
+        required = True, 
+        type = argparse.FileType(
+            'r', 
+            encoding = 'UTF-8', 
+            errors = 'ignore'
+        )
+    )
  
     return parser.parse_args()
 
-def run(token, word, verbose):
+def run(token, word):
     """ Check if [word] can decrypt [token]
     """
     try:
@@ -51,63 +85,60 @@ def run(token, word, verbose):
         return True
 
     except jwt.exceptions.InvalidTokenError:
-        if verbose:
-            print(DEBUG + "InvalidTokenError: " + Style.BRIGHT + word + RESET)
+        logger.debug("InvalidTokenError: {}".format(word))
         return False
     except jwt.exceptions.DecodeError:
-        print(WARNING + "DecodingError: " + Style.BRIGHT + word + RESET)
+        logger.debug("DecodingError: {}".format(word))
         return False
     except Exception as ex:
-        print(ERROR + "Exception: " + Style.BRIGHT + "{}".format(ex) + RESET)
-        return False
+        logger.exception("Exception: {}".format(ex))
+        sys.exit(1)
 
 def main():
     try:
         args = parse_args()
 
+        logger.setLevel(args.loglevel)
+
         token = args.token
         wordlist = args.wordlist
-        verbose = args.verbose
 
         ## Variables summary
-        print(SUMMARY + "JWT: " + Style.BRIGHT + "{}".format(token) + RESET)
-        print(SUMMARY + "Wordlist: " + Style.BRIGHT + "{}".format(wordlist.name) + RESET)
+        logger.info("JWT: {}".format(token))
+        logger.info("Wordlist: {}".format(wordlist.name))
+
+        logger.info("Starting brute-force attacks")
+        logger.warn("Pour yourself some coffee, this might take a while..." )
 
         start_time = time.time()
-        print("[*] starting {}".format(time.ctime()))
-        
-        print(INFO + "Starting brute-force attacks" + RESET)
-        print(WARNING + "Pour yourself some coffee, this might take a while..." + RESET)
+
         for entry in wordlist:
             word = entry.rstrip()
-            result = run(token, word, verbose)
+            result = run(token, word)
 
             if result:
-                print(RESULT + "Secret key: " + Style.BRIGHT + "{}".format(word) + RESET) 
+                logger.info("Secret key: {}".format(word))
 
                 # Save the holy secret into a file in case sys.stdout is not responding
                 with open("jwtpot.potfile", "a+") as file:
                     file.write("{0}:{1}".format(token, word))
-                    print(RESULT + "Secret key saved to location: " + Style.BRIGHT + "{}".format(file.name) + RESET)
+                    logger.info("Secret key saved to location: {}".format(file.name))
 
                 break
 
         end_time = time.time()
-        print("[*] finished {}".format(time.ctime()))
-
         elapsed_time = end_time - start_time
-        print("[*] elapsed time: {} sec".format(elapsed_time))
+
+        logger.info("Finished in {} sec".format(elapsed_time))
 
     except KeyboardInterrupt:
-        print(WARNING + "CTRL+C pressed, exiting..." + RESET)
+        logger.error("CTRL+C pressed, exiting...")
 
         wordlist.close()
 
-        end_time = time.time()
-        print("[*] stopped {}".format(time.ctime()))
+        elapsed_time = time.time() - start_time
 
-        elapsed_time = end_time - start_time
-        print("[*] elapsed time: {} sec".format(elapsed_time))
+        logger.info("Interrupted after {} sec".format(elapsed_time))
 
 if __name__ == "__main__":
     main()
