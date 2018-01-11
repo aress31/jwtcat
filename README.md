@@ -4,7 +4,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Cracking JSON Web Token.
-
 This script performs offline brute-force attacks against JSON Web Token (JWT) in order to discover the secret key used for the signature. 
 
 *Note: This script is only configured to work with signatures generated using the 'HS256' hashing algorithm.*
