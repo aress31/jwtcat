@@ -1,5 +1,8 @@
 ![JSON Web Token Cracker](images/jwtcat_logo.png)
 # jwtcat
+[![Language](https://img.shields.io/badge/Lang-Python-blue.svg)](https://www.python.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://opensource.org/licenses/Apache-2.0)
+
 ## Cracking JSON Web Token.
 
 This script performs offline brute-force attacks against JSON Web Token (JWT) in order to discover the secret key used for the signature. 
