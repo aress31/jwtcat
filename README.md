@@ -15,17 +15,21 @@ More information about JWT vulnerabilities can be found at:
 ![example](images/example.png)
 
 ## Installation
-    $ git clone https://github.com/AresS31/jwtcat
-    $ cd jwtcat
-    # pip3 install -r requirements.txt
+```
+$ git clone https://github.com/AresS31/jwtcat
+$ cd jwtcat
+# pip3 install -r requirements.txt
+```
 
 ### Usage
-    $ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
+```
+$ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
 
-    [-t, --token]:      JSON Web Token 
-    [-v, --verbose]:    enable verbose
-    [-w, --wordlist]:   wordlist containing the passwords
-    [-h, --help]:       display help
+[-t, --token]:      JSON Web Token 
+[-v, --verbose]:    enable verbose
+[-w, --wordlist]:   wordlist containing the passwords
+[-h, --help]:       display help
+```
 
 ## Dependencies
 ### Third-party libraries
