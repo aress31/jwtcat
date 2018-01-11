@@ -40,7 +40,7 @@ The *python-colorlog* package is required.
 <https://pypi.python.org/pypi/colorlog>
 
 ## Possible Improvements
-* Increase the script performances.
+- [ ] Increase the script performances.
 
 ## Licenses
 ### jwtcat
