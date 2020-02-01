@@ -107,7 +107,7 @@ def main():
         logger.info("JWT: {}".format(token))
         logger.info("Wordlist: {}".format(wordlist.name))
         logger.info("Starting brute-force attacks")
-        logger.warn("Pour yourself some coffee, this might take a while..." )
+        logger.warning("Pour yourself some coffee, this might take a while..." )
 
         start_time = time.time()
 
