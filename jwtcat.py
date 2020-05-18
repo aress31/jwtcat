@@ -120,7 +120,7 @@ def main():
 
                 # Save the holy secret into a file in case sys.stdout is not responding
                 with open("jwtpot.potfile", "a+") as file:
-                    file.write("{0}:{1}".format(token, word))
+                    file.write("{0}:{1}\n".format(token, word))
                     logger.info("Secret key saved to location: {}".format(file.name))
 
                 break
