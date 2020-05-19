@@ -17,10 +17,10 @@ More information about JWT vulnerabilities can be found at: <https://auth0.com/b
 ## Features
 
 - Test against the following vulnerabilitie(s):
-  - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951): JWT signature bypass due to the use of `None` hashing algortihm (`alg=none`)
+  - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951): JWT signature bypass due to the use of `None` hashing algorithm (`alg=none`)
 - Password cracking of JWT signed with the HS256 hashing algorithm via:
   - Brute-force attacks
-  - Wordlists attacks
+  - Wordlist attacks
 
 ---
 
@@ -43,14 +43,14 @@ git clone https://github.com/AresS31/jwtcat
 cd jwtcat
 ```
 
-2. (Optional but recommended) Create and activate a new `Python` virtual environement:
+2. (Optional but recommended) Create and activate a new `Python` virtual environment:
 
-   - Create the virtual environement: `python -m venv env`
-   - Activate the newly created environement:
+   - Create the virtual environment: `python -m venv env`
+   - Activate the newly created environment:
      - On POSIX: `source ./env/bin/activate`
      - On Windows: `./env/Scripts/Activate.ps1`
 
-3. Install `jwtcat` dependancies:
+3. Install `jwtcat`'s dependencies:
 
 ```bash
 python -m pip install -r requirements.txt
