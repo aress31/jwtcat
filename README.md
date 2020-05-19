@@ -116,6 +116,8 @@ Your feedback and contributions will be **much** appreciated.
 ### v1.1 - May 2020:
 
 - Added support for brute-force attacks
+- Added checks to see if jwt is signed with HS256
+- Added checks to see if jwt is vulnerable to [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951)
 - Added potfile options
 - Code refactoring
 - Improved the standard output formatting
