@@ -17,7 +17,7 @@ More information about JWT vulnerabilities can be found at: <https://auth0.com/b
 ## Features
 
 - Test against the following vulnerabilitie(s):
-  - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951) JWT signature bypass due to the use of `None` hashing algortihm (`alg=none`)
+  - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951): JWT signature bypass due to the use of `None` hashing algortihm (`alg=none`)
 - Password cracking of JWT signed with the HS256 hashing algorithm via:
   - Brute-force attacks
   - Wordlists attacks
@@ -83,6 +83,8 @@ To test a JWT against [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-20
 ```bash
 python jwtcat.py vulnerable -h
 ```
+
+---
 
 ## Sponsor ♥
 
