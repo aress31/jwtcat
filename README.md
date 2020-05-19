@@ -58,7 +58,7 @@ python -m pip install -r requirements.txt
 
 ---
 
-### Usage
+## Usage
 
 To get a list of options and switches use:
 
