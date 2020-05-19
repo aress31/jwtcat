@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/)
 
-## A JSON Web Token (JWT) CPU-based cracker
+## A CPU-based JSON Web Token (JWT) cracker and - to some extent - scanner
 
 `jwtcat` is a `Python script` designed to detect and exploit well-known cryptographic flaws present in JSON Web Token (JWT). These vulnerabilities, if successfully exploited by an adversary could allow authentication bypass, information disclosure and could ultimately lead to the compromise of an entire information system.
 
