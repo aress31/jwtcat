@@ -1,105 +1,128 @@
-![JSON Web Token Cracker](images/jwtcat_logo.png)
+![JSON Web Token Cracker](./images/jwtcat_logo.png)
+
 # jwtcat
+
 [![Language](https://img.shields.io/badge/Lang-Python-blue.svg)](https://www.python.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/)
 
-## Cracking JSON Web Token.
-This script performs offline brute-force attacks against JSON Web Token (JWT) in order to discover the secret key used for the signature. 
+## A JSON Web Token (JWT) CPU-based cracker
 
-*Note: This script is only configured to work with signatures generated using the 'HS256' hashing algorithm.*
+`jwtcat` is a `Python script` designed to detect and exploit well-known cryptographic flaws present in JSON Web Token (JWT). These vulnerabilities, if successfully exploited by an adversary could allow authentication bypass, information disclosure and could ultimately lead to the compromise of an entire information system.
 
-More information about JWT vulnerabilities can be found at:
+More information about JWT vulnerabilities can be found at: <https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/>
 
-<https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/>
+---
 
-![example](images/example.png)
+## Features
+
+- Test against the following vulnerabilitie(s):
+  - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951) JWT signature bypass due to the use of `None` hashing algortihm (`alg=none`)
+- Password cracking of JWT signed with the HS256 hashing algorithm via:
+  - Brute-force attacks
+  - Wordlists attacks
+
+---
+
+## Requirements
+
+`jwtcat` is written in Python 3 (and therefore **requires a minimum of `Python 3.6`**) in addition to the following libraries:
+
+- coloredlogs: <https://pypi.org/project/coloredlogs/>
+- PyJWT: <https://pypi.org/project/PyJWT/>
+- tqdm: <https://pypi.org/project/tqdm/>
+
+---
 
 ## Installation
+
+1. Clone/download the repository:
+
+```bash
+git clone https://github.com/AresS31/jwtcat
+cd jwtcat
 ```
-$ git clone https://github.com/AresS31/jwtcat
-$ cd jwtcat
-# pip3 install -r requirements.txt
+
+2. (Optional but recommended) Create and activate a new `Python` virtual environement:
+
+   - Create the virtual environement: `python -m venv env`
+   - Activate the newly created environement:
+     - On POSIX: `source ./env/bin/activate`
+     - On Windows: `./env/Scripts/Activate.ps1`
+
+3. Install `jwtcat` dependancies:
+
+```bash
+python -m pip install -r requirements.txt
 ```
+
+---
 
 ### Usage
-```
-$ python3 jwtcat.py [-h] -t TOKEN [-v] -w WORDLIST
 
-[-t, --token]:      JSON Web Token 
-[-v, --verbose]:    enable verbose
-[-w, --wordlist]:   wordlist containing the passwords
-[-h, --help]:       display help
+To get a list of options and switches use:
+
+```bash
+python jwtcat.py -h
 ```
 
-## Dependencies
-### Third-party libraries
-#### PyJWT 1.4.2
-The *python3-jwt* package is required. 
+To get a list of options and switches for brute force attacks:
 
-<https://pypi.python.org/pypi/PyJWT/1.4.2> 
+```bash
+python jwtcat.py brute-force -h
+```
 
-#### python-colorlog
-The *python-colorlog* package is required. 
+To get a list of options and switches for wordlist attacks:
 
-<https://pypi.python.org/pypi/colorlog>
+```bash
+python jwtcat.py wordlist -h
+```
 
-## Possible Improvements
-- [ ] Increase the script performances.
+To test a JWT against [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951) and HS256 brute-force attacks:
+
+```bash
+python jwtcat.py vulnerable -h
+```
+
+## Sponsor ♥
+
+If you use `jwtcat` a lot (especially if it's used commercially), please consider donating as a lot of **time** and **effort** went into building and maintaining this project.
+
+Press the "Sponsor" button on the top of this page to see ways of donating/sponsoring to this project.
+
+---
+
+## Contributions
+
+Your feedback and contributions will be **much** appreciated.
+
+---
+
+## Roadmap
+
+- [ ] Add more attack vectors
+- [ ] Implement support for the `-tF, --token-file` swicth
+- [ ] Implement support for multithreading or multiprocessing
+- [ ] Improve the code logic for:
+  - [ ] `TQDM` integration with the `logger`
+- [ ] Improve the script performances
+
+---
+
+## Changelog
+
+### v1.1 - May 2020:
+
+- Added support for brute-force attacks
+- Added potfile options
+- Code refactoring
+- Improved the standard output formatting
+- Switched from `python-colorlog` to `coloredlogs`
+
+---
 
 ## Licenses
-### jwtcat
-Copyright (C) 2017 Alexandre Teyar
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (C) 2017 - 2020 Alexandre Teyar
 
-<http://www.apache.org/licenses/LICENSE-2.0>
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-   limitations under the License. 
-
-### PyJWT 1.4.2
-Copyright (c) 2015 José Padilla
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-### python-colorlog
-Copyright (c) 2012 Sam Clements sam@borntyping.co.uk
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+See [LICENSE](../blob/master/LICENSE) file for details.

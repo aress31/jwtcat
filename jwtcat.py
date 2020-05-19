@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#    Copyright (C) 2017 Alexandre Teyar
+#    Copyright (C) 2017 - 2020 Alexandre Teyar
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,76 +14,171 @@
 #    limitations under the License.
 
 import argparse
-from datetime import datetime, timedelta
-import colorlog
-import jwt
+import json
 import logging
 import os
 import signal
 import sys
 import time
+from datetime import datetime, timedelta
+from itertools import chain, product
 
-formatter = colorlog.ColoredFormatter(
-    "%(log_color)s[%(levelname)s] %(message)s%(reset)s",
-    reset = True,
-    log_colors = {
-        'DEBUG':    'cyan',
-        'INFO':     'green',
-        'WARNING':  'yellow',
-        'ERROR':    'red',
-        'CRITICAL': 'red, bg_white',
-    }
-)
-handler = colorlog.StreamHandler()
-handler.setFormatter(formatter)
-logger = colorlog.getLogger("jwtcatLog")
-logger.addHandler(handler)
+import coloredlogs
+import jwt
+from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
+coloredlogs.install(level='DEBUG', milliseconds=True)
 
 def parse_args():
     """ Parse and validate user's command line
     """
     parser = argparse.ArgumentParser(
-        description = "JSON Web Token brute-forcer"
+        description="A CPU-based JSON Web Token (JWT) cracker",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    subparsers = parser.add_subparsers(
+        dest='attack_mode',
+        title="Attack-mode",
+        required=True
     )
 
-    parser.add_argument(
-        "-t", "--token", 
-        dest = "token", 
-        help = "JSON Web Token", 
-        required = True, 
-        type = str
+    brute_force_subparser = subparsers.add_parser(
+        "brute-force",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
-    parser.add_argument(
-        "-v", "--verbose",
-        dest = "loglevel",
-        help = "enable verbose",
-        required = False,
-        action = "store_const", 
-        const = logging.DEBUG,
-        default = logging.INFO
+    brute_force_subparser.add_argument(
+        "-c", "--charset",
+        default="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        dest="charset",
+        help="User-defined charset",
+        type=str,
+        required=False,
     )
 
+    brute_force_subparser.add_argument(
+        "--increment-min",
+        default=1,
+        dest="increment_min",
+        help="Start incrementing at X",
+        type=int,
+        required=False,
+    )
+
+    brute_force_subparser.add_argument(
+        "--increment-max",
+        default=8,
+        dest="increment_max",
+        help="Stop incrementing at X",
+        type=int,
+        required=False,
+    )
+
+    cve_subparser = subparsers.add_parser(
+        "vulnerable",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    wordlist__subparser = subparsers.add_parser(
+        "wordlist",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    
     # Set the UTF-8 encoding and ignore error mode to avoid issues with the wordlist
+    wordlist__subparser.add_argument(
+        "-w", "--wordlist",
+        default=argparse.SUPPRESS,
+        dest="wordlist",
+        help="Wordlist of private key candidates",
+        required=True,
+        type=argparse.FileType(
+            'r',
+            encoding='UTF-8',
+            errors='ignore'
+        )
+    )                                      
+    
     parser.add_argument(
-        "-w", "--wordlist", 
-        dest = "wordlist", 
-        help = "wordlist containing the passwords", 
-        required = True, 
-        type = argparse.FileType(
-            'r', 
-            encoding = 'UTF-8', 
-            errors = 'ignore'
+        "-lL", "--log-level",
+        default=logging.INFO,
+        dest="log_level",
+        choices=[
+            'DEBUG',
+            'INFO',
+        ],
+        help="Set the logging level",
+        type=str,
+        required=False,
+    )
+
+    parser.add_argument(
+        "-o", "--outfile",
+        dest="outfile",
+        help="Define outfile for recovered private keys",
+        required=False,
+        type=argparse.FileType(
+            'w+',
+            encoding='UTF-8',
+            errors='ignore'
         )
     )
- 
+
+    parser.add_argument(
+        "--potfile-disable",
+        action='store_true',
+        default=False,
+        dest="potfile_disable",
+        help="Do not write potfile",
+        required=False,
+    )
+
+    parser.add_argument(
+        "--potfile-path",
+        default='jwtpot.potfile',
+        dest="potfile",
+        help="Specific path to potfile",
+        required=False,
+        type=argparse.FileType(
+            'a+',
+            encoding='UTF-8',
+            errors='ignore'
+        )
+    )
+
+    # parser.add_argument(
+    #     "-tF", "--jwt-file",
+    #     default=argparse.SUPPRESS,
+    #     dest="token_file",
+    #     help="File with JSON Web Tokens to attack",
+    #     required=False,
+    #     type=argparse.FileType(
+    #         'r',
+    #         encoding='UTF-8',
+    #         errors='ignore'
+    #     )
+    # )
+
+    parser.add_argument(
+        default=argparse.SUPPRESS,
+        dest="token",
+        help="JSON Web Token to attack",
+        type=str
+    )
+
     return parser.parse_args()
+
+
+def bruteforce(charset, minlength, maxlength):
+    return (''.join(candidate)
+        for candidate in chain.from_iterable(product(charset, repeat=i)
+        for i in range(minlength, maxlength + 1)))
 
 def run(token, word):
     """ Check if [word] can decrypt [token]
     """
     try:
-        payload = jwt.decode(token, word, algorithm = 'HS256')
+        payload = jwt.decode(token, word, algorithm='HS256')
         return True
 
     except jwt.exceptions.InvalidTokenError:
@@ -96,34 +191,68 @@ def run(token, word):
         logger.exception("Exception: {}".format(ex))
         sys.exit(1)
 
+
 def main():
     try:
         args = parse_args()
-        logger.setLevel(args.loglevel)
-
-        token = args.token
-        wordlist = args.wordlist
-
-        logger.info("JWT: {}".format(token))
-        logger.info("Wordlist: {}".format(wordlist.name))
-        logger.info("Starting brute-force attacks")
-        logger.warning("Pour yourself some coffee, this might take a while..." )
+        logger.setLevel(args.log_level)
 
         start_time = time.time()
+  
+        if args.attack_mode == "vulnerable":
+            headers = jwt.get_unverified_header(args.token)
 
-        for entry in wordlist:
-            word = entry.rstrip()
-            result = run(token, word)
+            if headers['alg'] == "HS256":
+                logging.info("JWT vulnerable to HS256 brute force attacks")
+            elif headers['alg'] == "None":
+                logging.info("JWT vulnerable to CVE-2018-1000531")
 
-            if result:
-                logger.info("Secret key: {}".format(word))
+            return
 
-                # Save the holy secret into a file in case sys.stdout is not responding
-                with open("jwtpot.potfile", "a+") as file:
-                    file.write("{0}:{1}\n".format(token, word))
-                    logger.info("Secret key saved to location: {}".format(file.name))
+        elif args.attack_mode in ('brute-force', 'wordlist'):
+            
+            headers = jwt.get_unverified_header(args.token)
+            
+            if not headers['alg'] == "HS256":
+                logging.error("JWT signed using an algorithm other than HS256.")
+            else:
+                if args.log_level == "DEBUG":
+                    tqdm_disable = True
+                else:
+                    tqdm_disable = False
 
-                break
+                logger.warning(
+                    "For attacking complex JWT, it is best to use compiled, GPU accelerated password crackers such as Hashcat and John the Ripper which offer more advanced techniques such as raw brute forcing, rules-based, and mask attacks.")
+                logger.warning(
+                    "Pour yourself a cup (or two) of ☕ as this operation might take a while depending on the size of your wordlist.")
+
+                if args.attack_mode == "brute-force":
+                    for candidate in tqdm(bruteforce(args.charset, args.increment_min, args.increment_max), disable=tqdm_disable):
+                        result = run(args.token, candidate)
+
+                        if result:
+                            break
+                elif args.attack_mode == "wordlist":
+                    for entry in tqdm(args.wordlist, disable=tqdm_disable):
+                        candidate = entry.rstrip()
+                        result = run(args.token, candidate)
+                        
+                        if result:
+                            break
+                    
+                if result:
+                    logger.info("Private key found: {}".format(candidate))
+
+                    if args.outfile:
+                        args.outfile.write("{0}:{1}\n".format(args.token, candidate))
+                        logging.info("Private key saved to: {}".format(args.outfile.name))
+                        
+                    # Save the private secret into a file in case sys.stdout is unresponsive
+                    if not args.potfile_disable:
+                        args.potfile.write("{0}:{1}\n".format(args.token, candidate))
+                else:
+                    logger.info("The private key was not found in this wordlist. Consider using a bigger wordlist or other types of attacks.")
+
 
         end_time = time.time()
         elapsed_time = end_time - start_time
@@ -132,10 +261,15 @@ def main():
     except KeyboardInterrupt:
         logger.error("CTRL+C pressed, exiting...")
 
-        wordlist.close()
+        # Not sure if necessary
+        # args.wordlist.close()
 
         elapsed_time = time.time() - start_time
         logger.info("Interrupted after {} sec".format(elapsed_time))
+    
+    except Exception as e:
+        logger.error("{}".format(e))
+
 
 if __name__ == "__main__":
     main()
