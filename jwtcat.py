@@ -174,18 +174,18 @@ def bruteforce(charset, minlength, maxlength):
         for candidate in chain.from_iterable(product(charset, repeat=i)
         for i in range(minlength, maxlength + 1)))
 
-def run(token, word):
-    """ Check if [word] can decrypt [token]
+def run(token, candidate):
+    """ Check if [candidate] can decrypt [token]
     """
     try:
-        payload = jwt.decode(token, word, algorithm='HS256')
+        payload = jwt.decode(token, candidate, algorithm='HS256')
         return True
 
     except jwt.exceptions.InvalidTokenError:
-        logger.debug(f"InvalidTokenError: {word}")
+        logger.debug(f"InvalidTokenError: {candidate}")
         return False
     except jwt.exceptions.DecodeError:
-        logger.debug(f"DecodingError: {word}")
+        logger.debug(f"DecodingError: {candidate}")
         return False
     except Exception as ex:
         logger.exception(f"Exception: {ex}")
