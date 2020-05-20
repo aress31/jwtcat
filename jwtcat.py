@@ -87,13 +87,13 @@ def run(token, word):
         return True
 
     except jwt.exceptions.InvalidTokenError:
-        logger.debug("InvalidTokenError: {}".format(word))
+        logger.debug(f"InvalidTokenError: {word}")
         return False
     except jwt.exceptions.DecodeError:
-        logger.debug("DecodingError: {}".format(word))
+        logger.debug(f"DecodingError: {word}")
         return False
     except Exception as ex:
-        logger.exception("Exception: {}".format(ex))
+        logger.exception(f"Exception: {ex}")
         sys.exit(1)
 
 def main():
@@ -104,8 +104,8 @@ def main():
         token = args.token
         wordlist = args.wordlist
 
-        logger.info("JWT: {}".format(token))
-        logger.info("Wordlist: {}".format(wordlist.name))
+        logger.info(f"JWT: {token}")
+        logger.info(f"Wordlist: {wordlist.name}")
         logger.info("Starting brute-force attacks")
         logger.warning("Pour yourself some coffee, this might take a while..." )
 
@@ -116,18 +116,18 @@ def main():
             result = run(token, word)
 
             if result:
-                logger.info("Secret key: {}".format(word))
+                logger.info(f"Secret key: {word}")
 
                 # Save the holy secret into a file in case sys.stdout is not responding
                 with open("jwtpot.potfile", "a+") as file:
-                    file.write("{0}:{1}\n".format(token, word))
-                    logger.info("Secret key saved to location: {}".format(file.name))
+                    file.write(f"{token}:{word}\n")
+                    logger.info(f"Secret key saved to location: {file.name}")
 
                 break
 
         end_time = time.time()
         elapsed_time = end_time - start_time
-        logger.info("Finished in {} sec".format(elapsed_time))
+        logger.info(f"Finished in {elapsed_time} sec")
 
     except KeyboardInterrupt:
         logger.error("CTRL+C pressed, exiting...")
@@ -135,7 +135,7 @@ def main():
         wordlist.close()
 
         elapsed_time = time.time() - start_time
-        logger.info("Interrupted after {} sec".format(elapsed_time))
+        logger.info(f"Interrupted after {elapsed_time} sec")
 
 if __name__ == "__main__":
     main()
