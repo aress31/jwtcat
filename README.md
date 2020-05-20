@@ -18,7 +18,7 @@ More information about JWT vulnerabilities can be found at: <https://auth0.com/b
 
 - Test against the following vulnerabilitie(s):
   - [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951): JWT signature bypass due to the use of `None` hashing algorithm (`alg=none`)
-- Password cracking of JWT signed with the HS256 hashing algorithm via:
+- Guessing attacks against JWT private keys **signed with the HS256 hashing algorithm**:
   - Brute-force attacks
   - Wordlist attacks
 
@@ -102,9 +102,9 @@ Your feedback and contributions will be **much** appreciated.
 
 ## Roadmap
 
-- [ ] Add more attack vectors
-- [ ] Implement support for the `-tF, --token-file` swicth
+- [ ] Implement additional attack vectors
 - [ ] Implement support for multithreading or multiprocessing
+- [ ] Implement support for the `-tF, --token-file` swicth
 - [ ] Improve the code logic for:
   - [ ] `TQDM` integration with the `logger`
 - [ ] Improve the script performances
@@ -115,10 +115,10 @@ Your feedback and contributions will be **much** appreciated.
 
 ### v1.1 - May 2020:
 
-- Added support for brute-force attacks
 - Added checks to see if jwt is signed with HS256
 - Added checks to see if jwt is vulnerable to [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951)
 - Added potfile options
+- Added support for brute-force attacks
 - Code refactoring
 - Improved the standard output formatting
 - Switched from `python-colorlog` to `coloredlogs`
