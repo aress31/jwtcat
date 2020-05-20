@@ -72,7 +72,7 @@ To get a list of options and switches for brute force attacks:
 python jwtcat.py brute-force -h
 ```
 
-![brute-force-demo](./images/brute-force_demo.gif)
+![brute-force-demo](./images/brute-force_demo_cropped.gif)
 
 To get a list of options and switches for wordlist attacks:
 
@@ -80,7 +80,7 @@ To get a list of options and switches for wordlist attacks:
 python jwtcat.py wordlist -h
 ```
 
-![wordlist-demo](./images/wordlist_demo.gif)
+![wordlist-demo](./images/wordlist_demo_cropped.gif)
 
 To test a JWT against [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-2015-2951) and HS256 brute-force attacks:
 
@@ -88,7 +88,7 @@ To test a JWT against [CVE-2018-1000531](https://nvd.nist.gov/vuln/detail/CVE-20
 python jwtcat.py vulnerable -h
 ```
 
-![vulnerable-demo](./images/vulnerable_demo.gif)
+![vulnerable-demo](./images/vulnerable_demo_cropped.gif)
 
 ---
 
