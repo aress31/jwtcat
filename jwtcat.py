@@ -191,6 +191,58 @@ def run(token, word):
         logger.exception(f"Exception: {ex}")
         sys.exit(1)
 
+def is_vulnerable(args):
+    headers = jwt.get_unverified_header(args.token)
+
+    if headers['alg'] == "HS256":
+        logging.info("JWT vulnerable to HS256 guessing attacks")
+    elif headers['alg'] == "None":
+        logging.info("JWT vulnerable to CVE-2018-1000531")
+
+def hs256_attack(args):
+    headers = jwt.get_unverified_header(args.token)
+    
+    if not headers['alg'] == "HS256":
+        logging.error("JWT signed using an algorithm other than HS256.")
+    else:
+        if args.log_level == "DEBUG":
+            tqdm_disable = True
+        else:
+            tqdm_disable = False
+
+        logger.warning(
+            "For attacking complex JWT, it is best to use compiled, GPU accelerated password crackers such as Hashcat and John the Ripper which offer more advanced techniques such as raw brute forcing, rules-based, and mask attacks.")
+        logger.warning(
+            "Pour yourself a cup (or two) of ☕ as this operation might take a while depending on the size of your wordlist.")
+
+        if args.attack_mode == "brute-force":
+            for candidate in tqdm(bruteforce(args.charset, args.increment_min, args.increment_max), disable=tqdm_disable):
+                result = run(args.token, candidate)
+
+                if result:
+                    break
+        elif args.attack_mode == "wordlist":
+            for entry in tqdm(args.wordlist, disable=tqdm_disable):
+                candidate = entry.rstrip()
+                result = run(args.token, candidate)
+                
+                if result:
+                    break
+            
+        if result:
+            logger.info(f"Private key found: {candidate}")
+
+            if args.outfile:
+                args.outfile.write(f"{args.token}:{candidate}\n")
+                logging.info(f"Private key saved to: {args.outfile.name}")
+                
+            # Save the private secret into a file in case sys.stdout is unresponsive
+            if not args.potfile_disable:
+                args.potfile.write(f"{args.token}:{candidate}\n")
+        else:
+            logger.info("The private key was not found in this wordlist. Consider using a bigger wordlist or other types of attacks.")
+
+
 
 def main():
     try:
@@ -200,59 +252,9 @@ def main():
         start_time = time.time()
   
         if args.attack_mode == "vulnerable":
-            headers = jwt.get_unverified_header(args.token)
-
-            if headers['alg'] == "HS256":
-                logging.info("JWT vulnerable to HS256 brute force attacks")
-            elif headers['alg'] == "None":
-                logging.info("JWT vulnerable to CVE-2018-1000531")
-
-            return
-
+            is_vulnerable(args)
         elif args.attack_mode in ('brute-force', 'wordlist'):
-            
-            headers = jwt.get_unverified_header(args.token)
-            
-            if not headers['alg'] == "HS256":
-                logging.error("JWT signed using an algorithm other than HS256.")
-            else:
-                if args.log_level == "DEBUG":
-                    tqdm_disable = True
-                else:
-                    tqdm_disable = False
-
-                logger.warning(
-                    "For attacking complex JWT, it is best to use compiled, GPU accelerated password crackers such as Hashcat and John the Ripper which offer more advanced techniques such as raw brute forcing, rules-based, and mask attacks.")
-                logger.warning(
-                    "Pour yourself a cup (or two) of ☕ as this operation might take a while depending on the size of your wordlist.")
-
-                if args.attack_mode == "brute-force":
-                    for candidate in tqdm(bruteforce(args.charset, args.increment_min, args.increment_max), disable=tqdm_disable):
-                        result = run(args.token, candidate)
-
-                        if result:
-                            break
-                elif args.attack_mode == "wordlist":
-                    for entry in tqdm(args.wordlist, disable=tqdm_disable):
-                        candidate = entry.rstrip()
-                        result = run(args.token, candidate)
-                        
-                        if result:
-                            break
-                    
-                if result:
-                    logger.info(f"Private key found: {candidate}")
-
-                    if args.outfile:
-                        args.outfile.write(f"{args.token}:{candidate}\n")
-                        logging.info(f"Private key saved to: {args.outfile.name}")
-                        
-                    # Save the private secret into a file in case sys.stdout is unresponsive
-                    if not args.potfile_disable:
-                        args.potfile.write(f"{args.token}:{candidate}\n")
-                else:
-                    logger.info("The private key was not found in this wordlist. Consider using a bigger wordlist or other types of attacks.")
-
+            hs256_attack(args)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
