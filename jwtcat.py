@@ -30,6 +30,7 @@ from tqdm import tqdm
 logger = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG', milliseconds=True)
 
+
 def parse_args():
     """ Parse and validate user's command line
     """
@@ -84,7 +85,7 @@ def parse_args():
         "wordlist",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    
+
     # Set the UTF-8 encoding and ignore error mode to avoid issues with the wordlist
     wordlist__subparser.add_argument(
         "-w", "--wordlist",
@@ -97,8 +98,8 @@ def parse_args():
             encoding='UTF-8',
             errors='ignore'
         )
-    )                                      
-    
+    )
+
     parser.add_argument(
         "-lL", "--log-level",
         default=logging.INFO,
@@ -171,8 +172,9 @@ def parse_args():
 
 def bruteforce(charset, minlength, maxlength):
     return (''.join(candidate)
-        for candidate in chain.from_iterable(product(charset, repeat=i)
-        for i in range(minlength, maxlength + 1)))
+            for candidate in chain.from_iterable(product(charset, repeat=i)
+                                                 for i in range(minlength, maxlength + 1)))
+
 
 def run(token, candidate):
     """ Check if [candidate] can decrypt [token]
@@ -191,6 +193,7 @@ def run(token, candidate):
         logger.exception(f"Exception: {ex}")
         sys.exit(1)
 
+
 def is_vulnerable(args):
     headers = jwt.get_unverified_header(args.token)
 
@@ -199,9 +202,10 @@ def is_vulnerable(args):
     elif headers['alg'] == "None":
         logging.info("JWT vulnerable to CVE-2018-1000531")
 
+
 def hs256_attack(args):
     headers = jwt.get_unverified_header(args.token)
-    
+
     if not headers['alg'] == "HS256":
         logging.error("JWT signed using an algorithm other than HS256.")
     else:
@@ -225,23 +229,23 @@ def hs256_attack(args):
             for entry in tqdm(args.wordlist, disable=tqdm_disable):
                 candidate = entry.rstrip()
                 result = run(args.token, candidate)
-                
+
                 if result:
                     break
-            
+
         if result:
             logger.info(f"Private key found: {candidate}")
 
             if args.outfile:
                 args.outfile.write(f"{args.token}:{candidate}\n")
                 logging.info(f"Private key saved to: {args.outfile.name}")
-                
+
             # Save the private secret into a file in case sys.stdout is unresponsive
             if not args.potfile_disable:
                 args.potfile.write(f"{args.token}:{candidate}\n")
         else:
-            logger.info("The private key was not found in this wordlist. Consider using a bigger wordlist or other types of attacks.")
-
+            logger.info(
+                "The private key was not found in this wordlist. Consider using a bigger wordlist or other types of attacks.")
 
 
 def main():
@@ -250,7 +254,7 @@ def main():
         logger.setLevel(args.log_level)
 
         start_time = time.time()
-  
+
         if args.attack_mode == "vulnerable":
             is_vulnerable(args)
         elif args.attack_mode in ('brute-force', 'wordlist'):
@@ -268,7 +272,7 @@ def main():
 
         elapsed_time = time.time() - start_time
         logger.info(f"Interrupted after {elapsed_time} sec")
-    
+
     except Exception as e:
         logger.error(f"{e}")
 
