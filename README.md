@@ -131,7 +131,7 @@ Your feedback and contributions will be **much** appreciated.
 
 ---
 
-## Licenses
+## License
 
 Copyright (C) 2017 - 2020 Alexandre Teyar
 
