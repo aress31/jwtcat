@@ -32,7 +32,10 @@ coloredlogs.install(level='DEBUG', milliseconds=True)
 
 
 def parse_args():
-    """ Parse and validate user's command line
+    """This function parses the command line.
+
+    Returns:
+        [object] -- The parsed arguments
     """
     parser = argparse.ArgumentParser(
         description="A CPU-based JSON Web Token (JWT) cracker",
@@ -171,13 +174,30 @@ def parse_args():
 
 
 def bruteforce(charset, minlength, maxlength):
+    """This function generates all the different possible combinaison in a given character space.
+
+    Arguments:
+        charset {string} -- The charset used to generate all possible candidates
+        minlength {integer} -- The minimum length for candiates generation
+        maxlength {integer} -- The maximum length for candiates generation
+
+    Returns:
+        [type] -- All the possible candidates
+    """
     return (''.join(candidate)
             for candidate in chain.from_iterable(product(charset, repeat=i)
                                                  for i in range(minlength, maxlength + 1)))
 
 
 def run(token, candidate):
-    """ Check if [candidate] can decrypt [token]
+    """This function checks if a candidate can decrypt a JWT token.
+
+    Arguments:
+        token {string} -- An encrypted JWT token to test
+        candidate {string} -- A candidate word for decoding
+
+    Returns:
+        [boolean] -- Result of the decoding attempt
     """
     try:
         payload = jwt.decode(token, candidate, algorithm='HS256')
@@ -195,6 +215,11 @@ def run(token, candidate):
 
 
 def is_vulnerable(args):
+    """This function checks a JWT token against a well-known vulnerabilities.
+
+    Arguments:
+        args {object} -- The command-line arguments
+    """
     headers = jwt.get_unverified_header(args.token)
 
     if headers['alg'] == "HS256":
@@ -204,6 +229,12 @@ def is_vulnerable(args):
 
 
 def hs256_attack(args):
+    """This function passes down different candidates to the run() function and is required
+    to handle different types of guessing attack.
+
+    Arguments:
+        args {object} -- The command-line arguments
+    """
     headers = jwt.get_unverified_header(args.token)
 
     if not headers['alg'] == "HS256":
