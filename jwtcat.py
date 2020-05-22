@@ -174,7 +174,7 @@ def parse_args():
 
 
 def bruteforce(charset, minlength, maxlength):
-    """This function generates all the different possible combinaison in a given character space.
+    """This function generates all the different possible combination in a given character space.
 
     Arguments:
         charset {string} -- The charset used to generate all possible candidates
@@ -240,29 +240,25 @@ def hs256_attack(args):
     if not headers['alg'] == "HS256":
         logging.error("JWT signed using an algorithm other than HS256.")
     else:
-        if args.log_level == "DEBUG":
-            tqdm_disable = True
-        else:
-            tqdm_disable = False
+        tqdm_disable = True if args.log_level == "DEBUG" else False
 
         logger.warning(
             "For attacking complex JWT, it is best to use compiled, GPU accelerated password crackers such as Hashcat and John the Ripper which offer more advanced techniques such as raw brute forcing, rules-based, and mask attacks.")
-        logger.warning(
+        logger.info(
             "Pour yourself a cup (or two) of ☕ as this operation might take a while depending on the size of your wordlist.")
 
         if args.attack_mode == "brute-force":
+            # Count = ....
             for candidate in tqdm(bruteforce(args.charset, args.increment_min, args.increment_max), disable=tqdm_disable):
                 result = run(args.token, candidate)
+                if result: break
 
-                if result:
-                    break
         elif args.attack_mode == "wordlist":
+            word_count=len(open(args.wordlist.name, "r", encoding="latin-1").readlines())
             for entry in tqdm(args.wordlist, disable=tqdm_disable):
                 candidate = entry.rstrip()
                 result = run(args.token, candidate)
-
-                if result:
-                    break
+                if result: break
 
         if result:
             logger.info(f"Private key found: {candidate}")
