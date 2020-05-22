@@ -251,14 +251,17 @@ def hs256_attack(args):
             # Count = ....
             for candidate in tqdm(bruteforce(args.charset, args.increment_min, args.increment_max), disable=tqdm_disable):
                 result = run(args.token, candidate)
-                if result: break
+                if result:
+                    break
 
         elif args.attack_mode == "wordlist":
-            word_count=len(open(args.wordlist.name, "r", encoding="latin-1").readlines())
-            for entry in tqdm(args.wordlist, disable=tqdm_disable):
+            word_count = len(open(args.wordlist.name, "r",
+                                  encoding="utf-8").readlines())
+            for entry in tqdm(args.wordlist, disable=tqdm_disable, total=word_count):
                 candidate = entry.rstrip()
                 result = run(args.token, candidate)
-                if result: break
+                if result:
+                    break
 
         if result:
             logger.info(f"Private key found: {candidate}")
