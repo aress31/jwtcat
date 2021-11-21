@@ -43,9 +43,9 @@ def parse_args():
     )
     subparsers = parser.add_subparsers(
         dest='attack_mode',
-        title="Attack-mode",
-        required=True
+        title="Attack-mode"
     )
+    subparsers.required = True
 
     brute_force_subparser = subparsers.add_parser(
         "brute-force",
