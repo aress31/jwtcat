@@ -253,7 +253,8 @@ def hs256_attack(args):
 
         elif args.attack_mode == "wordlist":
             word_count = len(open(args.wordlist.name, "r",
-                                  encoding="utf-8").readlines())
+                                  encoding="utf-8",
+                                  errors="ignore").readlines())
             for entry in tqdm(args.wordlist, disable=tqdm_disable, total=word_count):
                 if run(args.token, entry.rstrip()):
                     return entry.rstrip()
