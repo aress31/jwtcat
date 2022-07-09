@@ -201,7 +201,7 @@ def run(token, candidate):
         [boolean] -- Result of the decoding attempt
     """
     try:
-        payload = jwt.decode(token, candidate, algorithm='HS256')
+        payload = jwt.decode(token, candidate, algorithm=["HS512", "HS256", "H384"])
         return True
 
     except jwt.exceptions.DecodeError:
@@ -225,6 +225,10 @@ def is_vulnerable(args):
 
     if headers['alg'] == "HS256":
         logging.info("JWT vulnerable to HS256 guessing attacks")
+    elif headers['alg'] == "HS512":
+        logging.info("JWT vulnerable to HS512 guessing attacks")
+    elif headers['alg'] == "HS384":
+        logging.info("JWT vulnerable to HS384 guessing attacks")
     elif headers['alg'] == "None":
         logging.info("JWT vulnerable to CVE-2018-1000531")
 
@@ -237,9 +241,9 @@ def hs256_attack(args):
         args {object} -- The command-line arguments
     """
     headers = jwt.get_unverified_header(args.token)
-
-    if not headers['alg'] == "HS256":
-        logging.error("JWT signed using an algorithm other than HS256.")
+    
+    if not headers['alg'] == "HS256" and not headers['alg'] == "HS512" and not headers['alg'] == "HS384":
+        logging.error("JWT signed using an algorithm other than HS256 or HS512 or HS384")
     else:
         tqdm_disable = True if args.log_level == "DEBUG" else False
 
