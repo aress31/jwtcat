@@ -201,7 +201,7 @@ def run(token, candidate):
         [boolean] -- Result of the decoding attempt
     """
     try:
-        payload = jwt.decode(token, candidate, algorithm=["HS512", "HS256", "H384"])
+        payload = jwt.decode(token, candidate, algorithms=["HS512", "HS256", "H384"])
         return True
 
     except jwt.exceptions.DecodeError:
