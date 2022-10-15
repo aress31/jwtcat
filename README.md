@@ -1,5 +1,3 @@
-![JSON Web Token Cracker](./images/jwtcat_logo.png)
-
 # jwtcat
 
 [![Language](https://img.shields.io/badge/Lang-Python-blue.svg)](https://www.python.org)
